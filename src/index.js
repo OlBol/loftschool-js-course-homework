@@ -72,11 +72,7 @@ function returnFnResult(fn) {
 
 // 2 вариант: со стрелочной функцией
 function returnCounter(number = 0) {
-    let result = number;
-
-    return () => {
-        return ++result;
-    }
+    return () => ++number;
 }
 
 /*
