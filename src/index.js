@@ -59,11 +59,14 @@ function reduce(array, fn, initial) {
 //     const result = [];
 //
 //     for (let key in obj) {
-//         result.push(key.toUpperCase());
+//         if (obj.hasOwnProperty(key)) {
+//             result.push(key.toUpperCase());
+//         }
 //     }
 //
 //     return result;
 // }
+
 // 2 вариант решения
 function upperProps(obj) {
     return Object.keys(obj).map(item => item.toUpperCase());
@@ -106,6 +109,11 @@ function slice(array, from, to) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    return new Proxy(obj, {
+        set(target, prop, value) {
+            return target[prop] = value ** 2;
+        }
+    });
 }
 
 export {
