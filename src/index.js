@@ -11,6 +11,11 @@
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
 function createDivWithText(text) {
+    const element = document.createElement('div');
+
+    element.innerText = text;
+
+    return element;
 }
 
 /*
@@ -22,6 +27,7 @@ function createDivWithText(text) {
    prepend(document.querySelector('#one'), document.querySelector('#two')) // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
  */
 function prepend(what, where) {
+    where.prepend(what);
 }
 
 /*
@@ -44,6 +50,14 @@ function prepend(what, where) {
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
+    const elements = where.querySelectorAll('p');
+    const result = [];
+
+    for (const item of elements) {
+        result.push(item.previousElementSibling);
+    }
+
+    return result;
 }
 
 /*
@@ -64,9 +78,9 @@ function findAllPSiblings(where) {
    findError(document.body) // функция должна вернуть массив с элементами 'привет' и 'loftschool'
  */
 function findError(where) {
-    var result = [];
+    const result = [];
 
-    for (var child of where.childNodes) {
+    for (const child of where.children) {
         result.push(child.innerText);
     }
 
@@ -86,6 +100,11 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
+    for (const item of where.childNodes) {
+        if (item.nodeType === 3) {
+            where.removeChild(item);
+        }
+    }
 }
 
 /*
@@ -100,6 +119,17 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
+    for (const item of where.childNodes) {
+        if (item.nodeType === 3) {
+            where.removeChild(item);
+        }
+    }
+
+    for (const item of where.childNodes) {
+        if (item.childNodes.length > 0) {
+            deleteTextNodesRecursive(item);
+        }
+    }
 }
 
 /*
@@ -167,6 +197,6 @@ export {
     findError,
     deleteTextNodes,
     deleteTextNodesRecursive,
-    collectDOMStat,
-    observeChildNodes
+    // collectDOMStat,
+    // observeChildNodes
 };
