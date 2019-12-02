@@ -45,8 +45,79 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    upCookie();
 });
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+
+    upCookie();
 });
+
+const upCookie = () => {
+    listTable.innerHTML = '';
+
+    if (document.cookie) {
+        const array = document.cookie.split('; ');
+
+        array.forEach(item => listCookie(item.split('=')));
+    }
+};
+
+const listCookie = (cookie) => {
+    if (filterNameInput.value) {
+        for (const key in cookie) {
+            if (isMatching(key, filterNameInput.value) || isMatching(cookie[key], filterNameInput.value)) {
+                addCookie(cookie);
+
+                return;
+            }
+        }
+    } else {
+        addCookie(cookie);
+    }
+
+};
+
+const addCookie = (cookie) => {
+    const [name, value] = cookie;
+    const tr = document.createElement('tr');
+    const tdName = document.createElement('td');
+    const tdValue = document.createElement('td');
+    const tdBtn = document.createElement('td');
+    const removeBtn = document.createElement('button');
+    const fragment = document.createDocumentFragment();
+
+    tdName.innerText = name;
+    tdValue.innerText = value;
+    removeBtn.innerText = 'Удалить';
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdValue);
+    tdBtn.appendChild(removeBtn);
+    tr.appendChild(tdBtn);
+    fragment.appendChild(tr);
+    listTable.appendChild(fragment);
+
+    removeBtn.addEventListener('click', (event) => {
+        removeCookie(event.target)
+    });
+};
+
+const removeCookie = (target) => {
+    const tr = target.closest('tr');
+    const tdName = tr.querySelector('td:first-child').textContent;
+    const tdValue = tr.querySelector('td:nth-child(2)').textContent;
+
+    tr.remove();
+    document.cookie = tdName + '=' + tdValue + ';expires=\'Thu, 01 Jan 1970 00:00:01 GMT\'';
+};
+
+const isMatching = (full, chunk) => {
+    const regexp = new RegExp(chunk, 'i');
+
+    return full.search(regexp) !== -1;
+};
+
+upCookie();
