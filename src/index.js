@@ -152,7 +152,42 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root) {
+function collectDOMStat(root, obj) {
+    if (obj === undefined) {
+        obj = {
+            tags: {},
+            classes: {},
+            texts: 0
+        };
+    }
+
+    for (const item of root.childNodes) {
+        if (item.nodeType === 3) {
+            obj.texts++;
+        }
+
+        if (item.nodeType === 1) {
+            if (obj.tags.hasOwnProperty(item.tagName)) {
+                obj.tags[item.tagName]++;
+            } else {
+                obj.tags[item.tagName] = 1;
+            }
+
+            for (const className of item.classList) {
+                if (obj.classes.hasOwnProperty(className)) {
+                    obj.classes[className]++;
+                } else {
+                    obj.classes[className] = 1;
+                }
+            }
+        }
+
+        if (item.childNodes.length > 0) {
+            collectDOMStat(item, obj);
+        }
+    }
+
+    return obj;
 }
 
 /*
@@ -197,6 +232,6 @@ export {
     findError,
     deleteTextNodes,
     deleteTextNodesRecursive,
-    // collectDOMStat,
-    // observeChildNodes
+    collectDOMStat,
+    observeChildNodes
 };
